@@ -1,5 +1,6 @@
-package com.risosu.EDesalesProgramacionNCapasJunio3.ML;
+package com.risosu.EDesalesProgramacionNCapasJunio3.JPA;
 
+import com.risosu.EDesalesProgramacionNCapasJunio3.ML.*;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
