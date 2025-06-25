@@ -1,28 +1,31 @@
 
 package com.risosu.EDesalesProgramacionNCapasJunio3.JPA;
 
+import com.risosu.EDesalesProgramacionNCapasJunio3.ML.*;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 
 @Entity
-public class Roll {
+public class Pais {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "idroll")
-    private int IdRoll;
+    @Column(name = "idpais")
+    private int IdPais;
     @Column(name = "nombre")
     private String Nombre;
 
-    public int getIdRoll() {
-        return IdRoll;
+    public int getIdPais() {
+        return IdPais;
     }
 
-    public void setIdRoll(int IdRoll) {
-        this.IdRoll = IdRoll;
+    public void setIdPais(int IdPais) {
+        this.IdPais = IdPais;
     }
 
     public String getNombre() {
@@ -32,8 +35,5 @@ public class Roll {
     public void setNombre(String Nombre) {
         this.Nombre = Nombre;
     }
-    
- 
-    
     
 }

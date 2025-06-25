@@ -1,2 +1,0 @@
-Nombre|ApllidoPatero|ApellidoMaterno
-Elian|Desales|Decaro

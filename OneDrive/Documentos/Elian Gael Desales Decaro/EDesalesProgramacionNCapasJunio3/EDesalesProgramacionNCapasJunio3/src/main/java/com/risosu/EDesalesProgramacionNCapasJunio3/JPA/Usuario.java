@@ -1,35 +1,51 @@
 package com.risosu.EDesalesProgramacionNCapasJunio3.JPA;
 
-import com.risosu.EDesalesProgramacionNCapasJunio3.ML.*;
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.Lob;
+import jakarta.persistence.ManyToOne;
+
 import org.springframework.format.annotation.DateTimeFormat;
 import java.util.Date;
 
-@Valid
+@Entity
 public class Usuario {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "idusuario")
     private int idUsuario;
-    @Size(min = 3, max = 10, message = "Nombre entre 3 y 5")
-    @NotEmpty(message = "Ingresa dato :@")
+    @Column(name = "nombre")
     private String nombre;
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @Column(name = "fechanacimiento")
     private Date FechaNacimiento;
+    @Column(name = "username")
     private String userName;
+    @Column(name = "apellidopaterno")
     private String apellidoPaterno;
+    @Column(name = "apellidomaterno")
     private String apellidoMaterno;
-    //@Email(message = "Correo invalido")
-    @Pattern(regexp = "[a-zA-Z0-9_]+([.][a-zA-Z0-9_]+)*@[a-zA-Z0-9_]+([.][a-zA-Z0-9_]+)*[.][a-zA-Z]{2,5}", message = "correo invalido regex")
+    @Column(name = "email")
     private String email;
+    @Column(name = "password")
     private String password;
+    @Column(name = "sexo")
     private char sexo;  // CHAR(1) en Oracle
+    @Column(name = "telefono")
     private String telefono;
+    @Column(name = "celular")
     private String celular;
+    @Column(name = "curp")
     private String curp;
+    @JoinColumn(name = "idroll")
+    @ManyToOne
     public Roll Roll;
+    @Lob
+    @Column(name = "imagenperfil")
     private String ImagenPerfil;
 
     public int getIdUsuario() {
@@ -144,6 +160,4 @@ public class Usuario {
         this.ImagenPerfil = ImagenPerfil;
     }
 
-    
-    
 }

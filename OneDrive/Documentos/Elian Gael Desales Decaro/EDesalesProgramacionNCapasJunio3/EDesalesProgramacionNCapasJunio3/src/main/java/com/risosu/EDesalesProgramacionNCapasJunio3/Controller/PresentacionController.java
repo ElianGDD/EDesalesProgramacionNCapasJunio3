@@ -4,8 +4,10 @@ import com.risosu.EDesalesProgramacionNCapasJunio3.DAO.ColoniaDAOImplementation;
 import com.risosu.EDesalesProgramacionNCapasJunio3.DAO.DireccionDAOImplementation;
 import com.risosu.EDesalesProgramacionNCapasJunio3.DAO.EstadoDAO;
 import com.risosu.EDesalesProgramacionNCapasJunio3.DAO.EstadoDAOImplementation;
+import com.risosu.EDesalesProgramacionNCapasJunio3.DAO.IUsuarioJPADAOImplementation;
 import com.risosu.EDesalesProgramacionNCapasJunio3.DAO.MunicipioDAOImplementation;
 import com.risosu.EDesalesProgramacionNCapasJunio3.DAO.PaisDAOImplementation;
+import com.risosu.EDesalesProgramacionNCapasJunio3.DAO.RollDAOImplementation;
 import com.risosu.EDesalesProgramacionNCapasJunio3.DAO.UsuarioDAOImplementation;
 import com.risosu.EDesalesProgramacionNCapasJunio3.ML.Usuario;
 import com.risosu.EDesalesProgramacionNCapasJunio3.ML.UsuarioDireccion;
@@ -14,10 +16,12 @@ import com.risosu.EDesalesProgramacionNCapasJunio3.ML.Direccion;
 import com.risosu.EDesalesProgramacionNCapasJunio3.ML.Pais;
 import com.risosu.EDesalesProgramacionNCapasJunio3.ML.Result;
 import com.risosu.EDesalesProgramacionNCapasJunio3.ML.ResultValidarDatos;
+import com.risosu.EDesalesProgramacionNCapasJunio3.ML.Roll;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -60,6 +64,10 @@ public class PresentacionController {
     private ColoniaDAOImplementation coloniaDAOImplementation;
     @Autowired
     private DireccionDAOImplementation direccionDAOImplementation;
+    @Autowired
+    private IUsuarioJPADAOImplementation iUsuarioJPADAOImplementation;
+    @Autowired
+    private  RollDAOImplementation rollDAOImplementation;
 
     @GetMapping
     public String Index(Model model) {
@@ -85,8 +93,13 @@ public class PresentacionController {
 
             UsuarioDireccion alumnoDireccion = new UsuarioDireccion();
             alumnoDireccion.Usuario = new Usuario();
+            alumnoDireccion.Usuario.Roll = new Roll();
             alumnoDireccion.Direccion = new Direccion();
+            
             model.addAttribute("usuarioDireccion", alumnoDireccion);
+            
+            model.addAttribute("Roll",rollDAOImplementation.GetALL().objects);
+            
 
             return "UsuarioForm";
         } else {
@@ -199,7 +212,7 @@ public class PresentacionController {
                 } catch (Exception ex) {
                     System.out.println(ex.getLocalizedMessage());
                 }
-                Result result = usuarioDAOImplementation.UpdateAlumnoDatosBasicos(alumnoDireccion);
+                Result result = iUsuarioJPADAOImplementation.UpdateDatosUsuario(alumnoDireccion);
 
                 //Actualizar Datos Basicos Usuario
             } else {
@@ -209,10 +222,10 @@ public class PresentacionController {
             }
 
         } else {
-            if (bindingResult.hasErrors()) {
-                model.addAttribute("usuarioDireccion", alumnoDireccion);
-                return "UsuarioForm";
-            }
+//            if (bindingResult.hasErrors()) {
+//                model.addAttribute("usuarioDireccion", alumnoDireccion);
+//                return "UsuarioForm";
+//            }
             try {
 
                 if (!imagenFile.isEmpty()) {
@@ -227,7 +240,8 @@ public class PresentacionController {
 
             }
 
-            Result result = usuarioDAOImplementation.Add(alumnoDireccion);
+//            Result result = usuarioDAOImplementation.Add(alumnoDireccion);
+            Result result = iUsuarioJPADAOImplementation.Add(alumnoDireccion);
         }
 
         return "Presentacion"; // redireccionen a la vista de GetAll
@@ -261,7 +275,7 @@ public class PresentacionController {
 
             String fileExtention = archivo.getOriginalFilename().split("\\.")[1];
             List<UsuarioDireccion> usuarioDireccion = new ArrayList<>();
-            
+
             String root = System.getProperty("user.dir");
             String path = "src/main/resources/documents";
             String fecha = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
@@ -269,7 +283,7 @@ public class PresentacionController {
             archivo.transferTo(new File(absolutePath));
 
             if (fileExtention.equals("txt")) {
-                usuarioDireccion = LecturaArchivoTXT(archivo);
+                usuarioDireccion = LecturaArchivoTXT(new File(absolutePath));
             } else { //"xlsx"
                 usuarioDireccion = LecturaArchivoExcel(new File(absolutePath));
             }
@@ -293,11 +307,11 @@ public class PresentacionController {
     }
 
     @PostMapping("Lectura")
-    public List<UsuarioDireccion> LecturaArchivoTXT(MultipartFile archivo) {
+    public List<UsuarioDireccion> LecturaArchivoTXT(File archivo) {
 
         List<UsuarioDireccion> usuarioDireccion = new ArrayList<>();
-        try (InputStream inputStream = archivo.getInputStream(); 
-            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));) {
+        try (
+                BufferedReader bufferedReader = new BufferedReader(new FileReader(archivo));) {
             bufferedReader.readLine();
             String linea = "";
             while ((linea = bufferedReader.readLine()) != null) {
@@ -313,7 +327,7 @@ public class PresentacionController {
             usuarioDireccion = null;
 
         }
-        
+
         return usuarioDireccion;
     }
 
