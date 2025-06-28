@@ -41,8 +41,8 @@ public class Usuario {
     private String celular;
     @Column(name = "curp")
     private String curp;
-    @JoinColumn(name = "idroll")
     @ManyToOne
+    @JoinColumn(name = "idroll")
     public Roll Roll;
     @Lob
     @Column(name = "imagenperfil")

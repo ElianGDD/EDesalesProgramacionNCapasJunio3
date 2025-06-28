@@ -22,10 +22,21 @@ public class Direccion {
     private String NumeroInterior;
     @Column(name = "numeroexterior")
     private String NumeroExterior;
-    @JoinColumn(name = "colonia")
+    @JoinColumn(name = "idcolonia")
     @ManyToOne
     public Colonia Colonia;
+    @JoinColumn(name = "idusuario")
+    @ManyToOne
+    public Usuario Usuario;
     //public Usuario Usuario;
+
+    public Usuario getUsuario() {
+        return Usuario;
+    }
+
+    public void setUsuario(Usuario Usuario) {
+        this.Usuario = Usuario;
+    }
 
     //Getters
     public Colonia getColonia() {

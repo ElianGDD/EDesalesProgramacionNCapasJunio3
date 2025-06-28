@@ -4,6 +4,11 @@ import com.risosu.EDesalesProgramacionNCapasJunio3.DAO.ColoniaDAOImplementation;
 import com.risosu.EDesalesProgramacionNCapasJunio3.DAO.DireccionDAOImplementation;
 import com.risosu.EDesalesProgramacionNCapasJunio3.DAO.EstadoDAO;
 import com.risosu.EDesalesProgramacionNCapasJunio3.DAO.EstadoDAOImplementation;
+import com.risosu.EDesalesProgramacionNCapasJunio3.DAO.IColoniaJPADAOImplementation;
+import com.risosu.EDesalesProgramacionNCapasJunio3.DAO.IEstadoJPADAOImplementation;
+import com.risosu.EDesalesProgramacionNCapasJunio3.DAO.IMunicipioJPADAOImplementation;
+import com.risosu.EDesalesProgramacionNCapasJunio3.DAO.IPaisJPADAOImplementation;
+import com.risosu.EDesalesProgramacionNCapasJunio3.DAO.IRollJPADAOImplementation;
 import com.risosu.EDesalesProgramacionNCapasJunio3.DAO.IUsuarioJPADAOImplementation;
 import com.risosu.EDesalesProgramacionNCapasJunio3.DAO.MunicipioDAOImplementation;
 import com.risosu.EDesalesProgramacionNCapasJunio3.DAO.PaisDAOImplementation;
@@ -67,19 +72,28 @@ public class PresentacionController {
     @Autowired
     private IUsuarioJPADAOImplementation iUsuarioJPADAOImplementation;
     @Autowired
-    private  RollDAOImplementation rollDAOImplementation;
+    private RollDAOImplementation rollDAOImplementation;
+    @Autowired
+    private IRollJPADAOImplementation iRollJPADAOImplementation;
+    @Autowired
+    private IPaisJPADAOImplementation iPaisJPADAOImplementation;
+    @Autowired
+    private IEstadoJPADAOImplementation iEstadoJPADAOImplementation;
+    @Autowired
+    private IMunicipioJPADAOImplementation iMunicipioJPADAOImplementation;
+    @Autowired
+    private IColoniaJPADAOImplementation iColoniaJPADAOImplementation;
 
     @GetMapping
     public String Index(Model model) {
-        Result result = usuarioDAOImplementation.GetAll();
+        Result result = iUsuarioJPADAOImplementation.GetAll();
         //Result resultRol = usuarioDAOImplementation.GetAllRol();
-
-        if (result.correct) {
-
-            model.addAttribute("usuarioDireccion", result.objects);
-            //model.addAttribute("roles", resultRol.objects);
-            model.addAttribute("busquedaAbierta", new Usuario());
-        }
+        model.addAttribute("usuarioDireccion", result.objects);
+        //model.addAttribute("roles", resultRol.objects);
+        model.addAttribute("busquedaAbierta", new Usuario());
+//        if (result.correct) {
+//
+//        }
         return "Presentacion";
 
     }
@@ -89,22 +103,21 @@ public class PresentacionController {
 
         if (idAlumno < 1) {
             model.addAttribute("usuarioDireccion", new UsuarioDireccion());
-            model.addAttribute("pais", paisDAOImplementation.GetAllPais().objects);
+            model.addAttribute("pais", iPaisJPADAOImplementation.GetAllPaisJPA().objects);
 
             UsuarioDireccion alumnoDireccion = new UsuarioDireccion();
             alumnoDireccion.Usuario = new Usuario();
             alumnoDireccion.Usuario.Roll = new Roll();
             alumnoDireccion.Direccion = new Direccion();
-            
+
             model.addAttribute("usuarioDireccion", alumnoDireccion);
-            
-            model.addAttribute("Roll",rollDAOImplementation.GetALL().objects);
-            
+
+            model.addAttribute("Roll", iRollJPADAOImplementation.GetAll().objects);
 
             return "UsuarioForm";
         } else {
 
-            model.addAttribute("usuarioDireccion", usuarioDAOImplementation.GetDatosAlumnoPDByIdAlumno(idAlumno).object);
+            model.addAttribute("usuarioDireccion", iUsuarioJPADAOImplementation.GetDatosAlumnoPDByIdAlumnoJPA(idAlumno).object);
             return "UsuarioEditable";
         }
 
@@ -118,31 +131,32 @@ public class PresentacionController {
         //Editar usuario n y -1
         if (idDireccion == null) {
 
-            Usuario usuario = (Usuario) usuarioDAOImplementation.GetDatosBasicosUsuarioByIdUsuario(idUsuario).object;
+            Result result = iUsuarioJPADAOImplementation.GetDatosBasicosUsuarioByIdUsuarioJPA(idUsuario);
 
-            UsuarioDireccion usuarioDireccion = new UsuarioDireccion();
-            usuarioDireccion.Usuario = usuario;
-            usuarioDireccion.Usuario.setIdUsuario(idUsuario);
+            UsuarioDireccion usuarioDireccion = (UsuarioDireccion) result.object;
+
+//            UsuarioDireccion usuarioDireccion = new UsuarioDireccion();
+//            usuarioDireccion.Usuario = usuario;
+//            usuarioDireccion.Usuario.setIdUsuario(idUsuario);
             usuarioDireccion.Direccion = new Direccion();
             usuarioDireccion.Direccion.setIdDireccion(-1);
 
             model.addAttribute("usuarioDireccion", usuarioDireccion);
 
-            //Agregar direccion n y 0
         } else if (idDireccion == 0) {
 
-            //Direccion direccion = (Direccion) direccionDAOImplementation.GetDireccionCMEPByIdUsuario(idUsuario).object;
+            Direccion direccion = (Direccion) direccionDAOImplementation.GetDireccionCMEPByIdUsuario(idUsuario).object;
             UsuarioDireccion usuarioDireccion = new UsuarioDireccion();
             usuarioDireccion.Usuario = new Usuario();
             usuarioDireccion.Usuario.setIdUsuario(idUsuario);
             usuarioDireccion.Direccion = new Direccion();
 
             model.addAttribute("usuarioDireccion", usuarioDireccion);
-            model.addAttribute("pais", paisDAOImplementation.GetAllPais().objects);
-            //Editar direccion n y m
+            model.addAttribute("pais", iPaisJPADAOImplementation.GetAllPaisJPA().objects);
+
         } else {
             // model.addAttribute("usuarioDireccion", new UsuarioDireccion());
-            model.addAttribute("pais", paisDAOImplementation.GetAllPais().objects);
+            model.addAttribute("pais", iPaisJPADAOImplementation.GetAllPaisJPA().objects);
 
             UsuarioDireccion usuarioDireccion = new UsuarioDireccion();
 //            alumnoDireccion.Usuario = new Usuario();
@@ -167,14 +181,14 @@ public class PresentacionController {
     @ResponseBody
     public Result GetEstadoBYIdPais(@PathVariable("IdPais") int IdPais) {
 
-        return estadoDAOImplementation.GetEstadoByIdPais(IdPais);
+        return iEstadoJPADAOImplementation.GetEstadoByIdPais(IdPais);
     }
 
     @GetMapping("/GetMunicipiosByIdEstado/{IdEstado}")
     @ResponseBody
     public Result GetMunicipioByIdEstados(@PathVariable("IdEstado") int IdEstado) {
 
-        return municipioDAOImplementation.GetMunicipioByIdEstado(IdEstado);
+        return iMunicipioJPADAOImplementation.GetMunicipioByIdEstado(IdEstado);
 
     }
 
@@ -182,8 +196,14 @@ public class PresentacionController {
     @ResponseBody
     public Result GetColoniaByIdMunicipio(@PathVariable("IdMunicipio") int IdMunicipio) {
 
-        return coloniaDAOImplementation.GetColoniaByMunicipio(IdMunicipio);
+        return iColoniaJPADAOImplementation.GetColoniaByMunicipio(IdMunicipio);
 
+    }
+
+    @GetMapping("/GetEstadosByPais/{idPais}")
+    @ResponseBody // retorno de dato estructurado (objeto en JSON/XML)
+    public Result GetEstadosByPais(@PathVariable("idPais") int IdPais) {
+        return iEstadoJPADAOImplementation.GetEstadoByIdPais(IdPais);
     }
 
     @PostMapping("form") // este recupera los datos del formulario
@@ -195,7 +215,7 @@ public class PresentacionController {
         if (alumnoDireccion.Usuario.getIdUsuario() > 0) {
             //Insertar Nueva dirección
             if (alumnoDireccion.Usuario.getIdUsuario() > 0 && alumnoDireccion.Direccion.getIdDireccion() == 0) {
-                Result result = usuarioDAOImplementation.AddNuevaDireccionByIdUsuario(alumnoDireccion);
+                Result result = iUsuarioJPADAOImplementation.AddNuevaDireccionByIdUsuarioJPA(alumnoDireccion);
 
                 //Actualizar Datos Direccion Usuario
             } else if (alumnoDireccion.Usuario.getIdUsuario() > 0 && alumnoDireccion.Direccion.getIdDireccion() == -1) {
@@ -217,7 +237,7 @@ public class PresentacionController {
                 //Actualizar Datos Basicos Usuario
             } else {
 
-                Result result = usuarioDAOImplementation.UpdateAlumnoDatosDireccion(alumnoDireccion);
+                Result result = iUsuarioJPADAOImplementation.UpdateAlumnoDatosDireccionJPA(alumnoDireccion);
 
             }
 
@@ -358,12 +378,6 @@ public class PresentacionController {
         return "";
     }
 
-    @GetMapping("/GetEstadosByPais/{idPais}")
-    @ResponseBody // retorno de dato estructurado (objeto en JSON/XML)
-    public Result GetEstadosByPais(@PathVariable("idPais") int IdPais) {
-        return estadoDAOImplementation.GetEstadoByIdPais(IdPais);
-    }
-
     public List<UsuarioDireccion> LecturaArchivoExcel(File archivo) {
         List<UsuarioDireccion> usuariosDireccion = new ArrayList<>();
         try (XSSFWorkbook workbook = new XSSFWorkbook(archivo);) {
@@ -382,4 +396,24 @@ public class PresentacionController {
         return usuariosDireccion;
     }
 
+    @GetMapping("DeleteUsuario/{idAlumno}")
+    public String DeleteUsuario(Model model, @PathVariable int idAlumno) {
+
+        UsuarioDireccion usuarioDireccion = new UsuarioDireccion();
+
+        Result resultDelete = iUsuarioJPADAOImplementation.DeleteAlumno(idAlumno);
+        Result resultGet = iUsuarioJPADAOImplementation.GetAll();
+        //Result resultRol = usuarioDAOImplementation.GetAllRol();
+        model.addAttribute("usuarioDireccion", resultGet.objects);
+        //model.addAttribute("roles", resultRol.objects);
+        model.addAttribute("busquedaAbierta", new Usuario());
+
+        return "Presentacion";
+    }
+
+    @GetMapping("delete/direccion")
+    public String DeleteDireccionByIdDireccion(@RequestParam int idDireccion) {
+        Result result = iUsuarioJPADAOImplementation.DeleteDireccionByIdDireccion(idDireccion);
+        return "";
+    }
 }

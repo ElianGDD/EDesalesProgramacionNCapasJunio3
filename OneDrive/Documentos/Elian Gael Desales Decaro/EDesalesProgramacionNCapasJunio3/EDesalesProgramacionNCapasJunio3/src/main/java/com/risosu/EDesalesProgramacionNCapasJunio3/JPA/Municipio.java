@@ -16,9 +16,9 @@ public class Municipio {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "idmunicipio")
     private int IdMunicipio;
-    @Column(name = "idnombre")
+    @Column(name = "nombre")
     private String Nombre;
-    @JoinColumn(name = "estado")
+    @JoinColumn(name = "idestado")
     @ManyToOne
     public Estado Estado;
 

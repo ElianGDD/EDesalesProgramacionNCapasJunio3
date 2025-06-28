@@ -85,7 +85,9 @@
                         <td th:text="|${usuarioDireccion.Usuario.celular} ${usuarioDireccion.Usuario.email} ${usuarioDireccion.Usuario.telefono}|">55 6785 2862,<br> alfagelion@gmail.com,<br> 91 9021 3945</td> <!-- Contacto-->
                         <td><ul><li th:each="direccion : ${usuarioDireccion.Direcciones}" th:text="(${direccion.Calle} == null) ? 'Sin Direccion' : |${direccion.calle} ${direccion.NumeroExterior} ${direccion.NumeroInterior}|"></li></ul></td> <!-- Direccion -->
                         <td><a th:href="@{/Presentacion/UsuarioForm/{idUsuario}(idUsuario = ${usuarioDireccion.Usuario.idUsuario})}" ><button id="Agregar" class="btn btn-primary" th:value="${usuarioDireccion.Usuario.idUsuario}"> <i class="bi bi-pen-fill"></i></button></td> <!-- Añadir -->
-                        <td><button class="btn btn-primary"> <i class="bi bi-person-dash-fill"></i></button></a></td> <!-- Eliminar -->
+                        <td>                    
+                            <a th:href="@{/Presentacion/DeleteUsuario/{idUsuario}(idUsuario = ${usuarioDireccion.Usuario.idUsuario})}" ><button id="Eliminar" class="btn btn-primary" th:value="${usuarioDireccion.Usuario.idUsuario}"> <i class="bi bi-person-dash-fill"></i></button>
+                        </td> <!-- Eliminar -->
                     </tr>
 
 
