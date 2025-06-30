@@ -5,6 +5,7 @@
 package com.risosu.EDesalesProgramacionNCapasJunio3.DAO;
 
 import com.risosu.EDesalesProgramacionNCapasJunio3.ML.Result;
+import com.risosu.EDesalesProgramacionNCapasJunio3.ML.Usuario;
 import com.risosu.EDesalesProgramacionNCapasJunio3.ML.UsuarioDireccion;
 
 /**
@@ -30,4 +31,6 @@ public interface IUsuarioJPADAO {
     Result GetDatosAlumnoPDByIdAlumnoJPA(int IdUsuario);
     
     Result GetDatosBasicosUsuarioByIdUsuarioJPA(int IdUsuario);
+    
+    Result GetBusquedaDinamica(Usuario usuario);
 }
